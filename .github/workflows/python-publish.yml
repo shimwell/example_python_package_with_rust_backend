@@ -42,9 +42,7 @@ jobs:
 
   upload_pypi:
     runs-on: ubuntu-latest
-    environment: pypi
-    permissions:
-      id-token: write
+    needs: [ linux ]
     steps:
       - uses: actions/download-artifact@v4
         with:

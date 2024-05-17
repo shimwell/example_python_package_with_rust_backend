@@ -6,7 +6,7 @@ A minimal example of a :snake: Python package with a :crab: Rust backend
 
 One of the great aspects of Rust is that calling Rust functions from Python is easy thanks to [maturin](https://github.com/PyO3/maturin)
 
-This repository also includes automated creation and uploading of wheels to PyPI for distribution to Windows :window: , Mac :green_apple: and Linux :penguin: thanks to [maturin-action](https://github.com/PyO3/maturin-action).
+This repository also includes automated creation and uploading of wheels to PyPI for distribution to Windows :window: , Mac :green_apple: and Linux :penguin: thanks to [maturin-action](https://github.com/PyO3/maturin-action) and [maturin](https://github.com/PyO3/maturin) for automatically generating the CI yaml.
 
 The package itself is less import and just prints a few messages to the terminal.
 

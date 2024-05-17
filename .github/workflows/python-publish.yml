@@ -72,9 +72,36 @@ jobs:
           name: wheels
           path: dist
 
+  windows:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        target: [x64, x86]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+          architecture: ${{ matrix.target }}
+      - uses: dtolnay/rust-toolchain@nightly
+      - name: Build wheels
+        uses: PyO3/maturin-action@v1
+        with:
+          target: ${{ matrix.target }}
+          args: --release --out dist
+      - name: Install built wheel
+        run: |
+          pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
+      - name: Upload wheels
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels
+          path: dist
+
+
   upload_pypi:
     runs-on: ubuntu-latest
-    needs: [ linux ]
+    needs: [ linux, macos, windows]
     permissions:
       contents: read
       id-token: write

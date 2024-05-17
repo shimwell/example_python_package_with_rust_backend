@@ -1,3 +1,5 @@
+# there are different ways of making a pypi package with rust
+# https://github.com/PyO3/maturin-action has examples
 name: Build and upload to PyPI
 
 on:
@@ -49,6 +51,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: wheels
+          path: dist
       - name: List artifacts
         run: ls -lhs
       - name: Publish package distributions to PyPI

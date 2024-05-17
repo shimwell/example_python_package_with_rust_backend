@@ -13,8 +13,8 @@ on:
       - published
 
 jobs:
-  # Library not loaded: /usr/local/opt/gettext/lib/libintl.8.dylib
   # macos:
+    # erros on Library not loaded: /usr/local/opt/gettext/lib/libintl.8.dylib
   #   runs-on: macos-latest
   #   steps:
   #     - uses: actions/checkout@v4
@@ -40,7 +40,8 @@ jobs:
   #         pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
   #         python -c "import example_python_package_with_rust_backend"
   #     - name: Upload wheels
-  #       uses: actions/upload-artifact@v4
+  #       uses: actions/upload-artifact@v3
+  #       uses: actions/upload-artifact@v4 breaks due to artifact names being the same3
   #       with:
   #         name: wheels
   #         path: dist
@@ -111,7 +112,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: wheels
-          path: dist
+          # path: dist
       - name: List artifacts
         run: ls -lhs
       - name: Publish package distributions to PyPI

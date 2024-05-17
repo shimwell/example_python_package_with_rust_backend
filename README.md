@@ -1,12 +1,29 @@
-A minimal a Python package with a Rust back end
+[![PyPI](https://img.shields.io/pypi/v/example_python_package_with_rust_backend?&label=PyPI)](https://pypi.org/project/example_python_package_with_rust_backend/)
+ 
 
-install 
+
+A minimal example of a :snake: Python package with a :crab: Rust backend
+
+One of the great aspects of Rust is that calling Rust functions from Python is easy thanks to [maturin](https://github.com/PyO3/maturin)
+
+This repository also includes automated creation and uploading of wheels to PyPI for distribution to Windows :window: , Mac :green_apple: and Linux :penguin: thanks to [maturin-action](https://github.com/PyO3/maturin-action).
+
+The package itself is less import and just prints a few messages to the terminal.
+
+## Install the package with pip
 
 ```bash
 pip install example_python_package_with_rust_backend
 ```
 
-Usage
+## Usage
 ```
-python examples/usage.py
+import example_python_package_with_rust_backend
+
+returned_value = example_python_package_with_rust_backend.hello_world(
+    int_arg=3,
+    float_arg=2.01,
+    str_arg='hi'
+)
+print(returned_value)
 ```

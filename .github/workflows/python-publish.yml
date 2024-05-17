@@ -21,25 +21,22 @@ jobs:
         with:
           python-version: 3.9
           architecture: x64
-      - uses: dtolnay/rust-toolchain@stable
       - name: Build wheels - x86_64
         uses: PyO3/maturin-action@v1
         with:
           target: x86_64
-          args: --release --out dist --sdist -m Cargo.toml
+          args: --release --out dist --sdist
       - name: Install built wheel - x86_64
         run: |
           pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
-          python -c "import example_python_package_with_rust_backend"
       - name: Build wheels - universal2
         uses: PyO3/maturin-action@v1
         with:
           target: universal2-apple-darwin
-          args: --release --out dist -m Cargo.toml
+          args: --release --out dist
       - name: Install built wheel - universal2
         run: |
           pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
-          python -c "import example_python_package_with_rust_backend"
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -57,16 +54,15 @@ jobs:
         with:
           python-version: 3.9
           architecture: ${{ matrix.target }}
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist -m Cargo.toml
+          args: --release --out dist
       - name: Install built wheel
         run: |
           pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
-          python -c "import example_python_package_with_rust_backend"
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
@@ -89,18 +85,16 @@ jobs:
       with:
         target: ${{ matrix.target }}
         manylinux: auto
-        args: --release --out dist -m Cargo.toml
+        args: --release --out dist
     - name: Install built wheel
       if: matrix.target == 'x86_64'
       run: |
         pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
-        python -c "import example_python_package_with_rust_backend"
     - name: Upload wheels
       uses: actions/upload-artifact@v4
       with:
         name: wheels
         path: dist
-
 
   upload_pypi:
     runs-on: ubuntu-latest

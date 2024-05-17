@@ -87,7 +87,6 @@ jobs:
       uses: PyO3/maturin-action@v1
       with:
         target: ${{ matrix.target }}
-        manylinux: auto
         args: --release --out dist --sdist -m Cargo.toml
     - name: Install built wheel
       if: matrix.target == 'x86_64'

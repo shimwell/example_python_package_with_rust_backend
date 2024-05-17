@@ -88,9 +88,7 @@ jobs:
       with:
         target: ${{ matrix.target }}
         manylinux: auto
-        # args: --release --out dist
-        args: --release --out dist --sdist
-        # args: --release --out dist --sdist -m Cargo.toml
+        args: --release --out dist --sdist -m Cargo.toml
     - name: Install built wheel
       if: matrix.target == 'x86_64'
       run: |

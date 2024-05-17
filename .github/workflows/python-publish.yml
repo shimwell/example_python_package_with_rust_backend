@@ -43,7 +43,7 @@ jobs:
   #       uses: actions/upload-artifact@v4
   #       with:
   #         name: wheels
-  #         name: wheels
+  #         path: dist
 
   windows:
     runs-on: windows-latest
@@ -61,16 +61,17 @@ jobs:
         uses: PyO3/maturin-action@v1
         with:
           target: ${{ matrix.target }}
-          args: --release --out dist-windows-${{ matrix.target }}
+          args: --release --out dist
       - name: Install built wheel
         run: |
-          pip install example_python_package_with_rust_backend --no-index --find-links dist-windows-${{ matrix.target }} --force-reinstall
+          pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
           python -c "import example_python_package_with_rust_backend"
       - name: Upload wheels
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
+        # uses: actions/upload-artifact@v4 breaks due to artifact names being the same
         with:
-          path: dist-windows-${{ matrix.target }}
           name: wheels
+          path: dist
 
   linux:
     runs-on: ubuntu-latest
@@ -87,17 +88,18 @@ jobs:
       uses: PyO3/maturin-action@v1
       with:
         target: ${{ matrix.target }}
-        args: --release --out dist-linux-${{ matrix.target }} --sdist -m Cargo.toml
+        args: --release --out dist --sdist -m Cargo.toml
     - name: Install built wheel
       if: matrix.target == 'x86_64'
       run: |
-        pip install example_python_package_with_rust_backend --no-index --find-links dist-linux-${{ matrix.target }} --force-reinstall
+        pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
         python -c "import example_python_package_with_rust_backend"
     - name: Upload wheels
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v3
+      # uses: actions/upload-artifact@v4 breaks due to artifact names being the same
       with:
-        path: dist-linux-${{ matrix.target }}
         name: wheels
+        path: dist
 
   upload_pypi:
     runs-on: ubuntu-latest
@@ -108,8 +110,8 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          pattern: dist-*
           name: wheels
+          path: dist
       - name: List artifacts
         run: ls -lhs
       - name: Publish package distributions to PyPI

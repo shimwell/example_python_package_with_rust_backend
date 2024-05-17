@@ -69,7 +69,7 @@ jobs:
       - name: Upload wheels
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
+          name: my-artifact-windows-${{ matrix.runs-on }}
           path: dist
 
   linux:
@@ -94,9 +94,10 @@ jobs:
         pip install example_python_package_with_rust_backend --no-index --find-links dist --force-reinstall
         python -c "import example_python_package_with_rust_backend"
     - name: Upload wheels
+      uses: actions/upload-artifact@v3
       uses: actions/upload-artifact@v4
       with:
-        name: wheels
+        name: my-artifact-linux-${{ matrix.runs-on }}
         path: dist
 
   upload_pypi:
@@ -108,7 +109,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: wheels
+          pattern: my-artifact-*
           path: dist
       - name: List artifacts
         run: ls -lhs

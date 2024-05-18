@@ -3,6 +3,8 @@
 #
 #    maturin generate-ci github -o .github/workflows/python-publish.yml
 #
+# modifications we made to support https://www.maturin.rs/distribution#using-pypis-trusted-publishing
+
 name: CI
 
 on:
@@ -16,6 +18,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   linux:

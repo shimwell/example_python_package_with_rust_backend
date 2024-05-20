@@ -1,5 +1,22 @@
 use pyo3::prelude::*;
 
+/// This function accepts three arguments and prints them.
+/// 
+/// # Arguments
+/// 
+/// * `int_arg` - An integer argument.
+/// * `float_arg` - A floating point argument.
+/// * `str_arg` - A string argument.
+/// 
+/// # Returns
+/// 
+/// * The square of `int_arg`.
+/// 
+/// # Examples
+/// 
+/// ```
+/// assert_eq!(hello_world(2, 3.14, "Hello"), Ok(4));
+/// ```
 #[pyfunction]
 fn hello_world(int_arg: i32, float_arg: f32, str_arg: &str) -> PyResult<i32> {
 

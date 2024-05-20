@@ -27,3 +27,17 @@ returned_value = example_python_package_with_rust_backend.hello_world(
 )
 print(returned_value)
 ```
+
+## Testing
+
+Testing in python with pytest, first install the package with testing dependencies
+
+```bash
+pip install example_python_package_with_rust_backend [tests]
+```
+
+Then test with pytest
+
+```
+pytest tests
+```

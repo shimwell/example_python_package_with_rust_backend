@@ -1,5 +1,5 @@
 [![PyPI](https://img.shields.io/pypi/v/example_python_package_with_rust_backend?&label=PyPI)](https://pypi.org/project/example_python_package_with_rust_backend/)
- 
+[![CI](https://github.com/shimwell/example_python_package_with_rust_backend/actions/workflows/python-publish.yml/badge.svg)](https://github.com/shimwell/example_python_package_with_rust_backend/actions/workflows/python-publish.yml)
 
 
 A minimal example of a :snake: Python package with a :crab: Rust backend

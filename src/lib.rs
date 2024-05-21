@@ -1,15 +1,14 @@
 use pyo3::prelude::*;
 use pyo3::wrap_pyfunction;
-use nalgebra::{DMatrix, DVector};
-// use num_complex::Complex;
-// use nalgebra::Matrix2;
-// use nalgebra::Matrix;
+use nalgebra::{DMatrix};
 use num_complex::Complex;
-// use nalgebra::{Matrix, U1, U8, VecStorage};
-// use num_complex::Complex;
 use lazy_static::lazy_static;
-// use nalgebra::DMatrix;
-// use num_complex::Complex;
+use ndarray::Array1;
+use sprs::{CsMat, CsVec};
+use std::iter::FromIterator;
+// use nalgebra::base::Matrix;
+use nalgebra::linalg::LU;
+use nalgebra::DVector;
 
 pub struct IPF16Coeffs {
     pub coeffs1: DMatrix<Complex<f64>>,
@@ -49,32 +48,47 @@ lazy_static! {
 
 #[pyfunction]
 fn cram(a: Vec<Vec<f64>>, n0: Vec<f64>, dt: f64) -> PyResult<Vec<f64>> {
-    // Convert the inputs to the appropriate types
-    let a = DMatrix::from_row_slice(a.len(), a.len(), &a.concat());
-    let n0 = DVector::from_vec(n0);
+    let size = n0.len();
+    let mut n1: Array1<Complex<f64>> = Array1::from_iter(n0.iter().map(|&x| Complex::new(x, 0.0)));
 
-    // Call the Rust function
-    let result = _cram(&a, &n0, dt);
+    let eye: CsMat<Complex<f64>> = CsMat::eye(size);
 
-    // Convert the result to a Python list and return it
-    Ok(result.as_slice().to_vec())
-}
+    let rows = a.len();
+    let cols = a[0].len();
+    let mut data: Vec<Complex<f64>> = Vec::new();
+    let mut row_indices: Vec<usize> = Vec::new();
+    let mut col_ptrs: Vec<usize> = vec![0];
+    
+    for (j, col) in a.iter().enumerate() {
+        for (i, &value) in col.iter().enumerate() {
+            data.push(Complex::new(value * dt, 0.0));
+            row_indices.push(i);
+        }
+        col_ptrs.push(data.len());
+    }
+    
+    let mtx = CsMat::new_csc((rows, cols), col_ptrs, row_indices, data.clone());
+    // let mtx = CsMat::from_iterator(size, size, a.iter().flat_map(|row| row.iter()).map(|&v| Complex::new(v * dt, 0.0)));
 
-fn _cram(a: &DMatrix<f64>, n0: &DVector<f64>, dt: f64) -> DVector<f64> {
-    // Implement the _cram function here
-    // This is a placeholder implementation
-    a * n0 * dt
+    // let solver = sprs::direct::SparseLU::new(mtx.view());
+    let dense_mtx = DMatrix::from_iterator(rows, cols, data.clone());
+    let solver = LU::new(dense_mtx);
+
+    for (theta, alpha) in IPF16_COEFFS.coeffs1.iter().cloned().zip(IPF16_COEFFS.coeffs2.iter().cloned()) {
+    // for (theta, alpha) in IPF16_COEFFS.coeffs1.iter().zip(&IPF16_COEFFS.coeffs2.iter()) {
+        let theta = Complex::new(theta.re, 0.0);
+        let system = &mtx - &eye.map(|&x| x * theta);
+        let n1_vec = DVector::from_iterator(n1.len(), n1.iter().cloned());
+        let res = solver.solve(&n1_vec).unwrap();
+        let res_arr = Array1::from_shape_vec(res.shape().0, res.iter().cloned().collect()).unwrap();
+        n1 = n1 + res_arr.map(|x| x * Complex::new(alpha.re * 2.0, 0.0));
+    }
+
+    Ok(n1.mapv(|x| x.re * IPF16_COEFFS.value).to_vec())
 }
 
 #[pymodule]
 fn example_python_package_with_rust_backend(_py: Python, m: &PyModule) -> PyResult<()> {
-    // Define your Python functions, classes, and variables here.
     m.add_function(wrap_pyfunction!(cram, m)?)?;
     Ok(())
 }
-
-// #[pymodule]
-// fn pydepkit(_py: Python, m: &PyModule) -> PyResult<()> {
-//     m.add_function(wrap_pyfunction!(cram, m)?)?;
-//     Ok(())
-// }

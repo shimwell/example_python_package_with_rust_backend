@@ -92,6 +92,7 @@ version = "0.1.0"
 dependencies = [
  "lazy_static",
  "nalgebra",
+ "ndarray",
  "num-complex 0.4.6",
  "pyo3",
  "sprs",

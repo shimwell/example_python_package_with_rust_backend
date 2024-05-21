@@ -5,7 +5,7 @@ use nalgebra::{DMatrix, DVector};
 // use nalgebra::Matrix2;
 // use nalgebra::Matrix;
 use num_complex::Complex;
-use nalgebra::{Matrix, U1, U8, VecStorage};
+// use nalgebra::{Matrix, U1, U8, VecStorage};
 // use num_complex::Complex;
 use lazy_static::lazy_static;
 // use nalgebra::DMatrix;
@@ -67,7 +67,14 @@ fn _cram(a: &DMatrix<f64>, n0: &DVector<f64>, dt: f64) -> DVector<f64> {
 }
 
 #[pymodule]
-fn pydepkit(_py: Python, m: &PyModule) -> PyResult<()> {
+fn example_python_package_with_rust_backend(_py: Python, m: &PyModule) -> PyResult<()> {
+    // Define your Python functions, classes, and variables here.
     m.add_function(wrap_pyfunction!(cram, m)?)?;
     Ok(())
 }
+
+// #[pymodule]
+// fn pydepkit(_py: Python, m: &PyModule) -> PyResult<()> {
+//     m.add_function(wrap_pyfunction!(cram, m)?)?;
+//     Ok(())
+// }
